@@ -26,7 +26,9 @@ public class JSONfunction {
 		try {
 			HttpClient httpclient = new DefaultHttpClient();
 			HttpPost httppost = new HttpPost(url);
-			httppost.setEntity(new UrlEncodedFormEntity(postParameters));
+			if (postParameters != null) {
+				httppost.setEntity(new UrlEncodedFormEntity(postParameters));
+			}
 			HttpResponse response = httpclient.execute(httppost);
 			HttpEntity entity = response.getEntity();
 			is = entity.getContent();
