@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -41,7 +42,8 @@ public class Student extends Activity {
 
 		private ProgressDialog progressDialog;
 		JSONArray jArray;
-		String url = "http://202.28.195.68/get_children.php";
+		//String url = "http://202.28.195.68/get_children.php";
+		String url = "http://203.159.6.202/moodle/webservice/rest/server.php";
 		List<String> name_list = new ArrayList<String>();
 		List<String> level_list = new ArrayList<String>();
 		
@@ -60,7 +62,8 @@ public class Student extends Activity {
 		protected Void doInBackground(Void... params) {
 
 			try {
-				jArray = JSONfunction.getJSONfromURL(url+"?wstoken="+sharedPref.getString("parent_token", "0"), null);
+				jArray = JSONfunction.getJSONfromURL(url+"?wstoken="+sharedPref.getString("parent_token", "0")+"&wsfunction=local_wstemplate_get_child&moodlewsrestformat=json", null);
+				//jArray = JSONfunction.getJSONfromURL(url+"?wstoken=1234567", null);
 			} catch (Exception e) {
 			
 			}
@@ -71,19 +74,25 @@ public class Student extends Activity {
 		protected void onPostExecute(Void result) {
 			progressDialog.dismiss();
 			if (jArray != null) {
-				Toast.makeText(Student.this, jArray.toString(), 5000).show();
+				Toast.makeText(Student.this, jArray.toString(), 50000).show();
+				//Toast.makeText(Student.this, String.valueOf(jArray.length()), 50000).show();
+				
 			} else {
 				Toast.makeText(Student.this, "NULL", 5000).show();
 			}
+			
 			super.onPostExecute(result);
+			
+			Log.d("TT", String.valueOf(jArray.length()));
 			for (int i = 0; i < jArray.length(); i++) {
 				JSONObject jObject;
 				try {
 					jObject = jArray.getJSONObject(i);
-					String child_name = jObject.getString("name").toUpperCase();
+					String child_name = jObject.getString("fullname").toUpperCase();
 					name_list.add(child_name);
-					String child_level = jObject.getString("level");
-					level_list.add(child_level);
+					Toast.makeText(Student.this, child_name, 5000).show();
+					//String child_level = jObject.getString("level");
+					//level_list.add(child_level);
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}

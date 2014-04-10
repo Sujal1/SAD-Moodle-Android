@@ -84,7 +84,8 @@ public class MainActivity extends Activity {
 
 		private ProgressDialog progressDialog;
 		JSONArray jArray;
-		String url = "http://202.28.195.68/api_login.php";
+		String url = "http://203.159.6.202/moodle/login/token.php?username=parent1&password=sad2014!Project&service=parent_access";
+		//String url = "http://202.28.195.68/api_login.php";
 		
 		
 		public MyAsyncTask() {
@@ -102,11 +103,15 @@ public class MainActivity extends Activity {
 		protected Void doInBackground(Void... params) {
 
 			ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
-			postParameters.add(new BasicNameValuePair("username", "sujal"));
-			postParameters.add(new BasicNameValuePair("password", "sad"));
+			/*postParameters.add(new BasicNameValuePair("username", "sujal"));
+			postParameters.add(new BasicNameValuePair("password", "sad"));*/
+			
+			postParameters.add(new BasicNameValuePair("username", "parent1"));
+			postParameters.add(new BasicNameValuePair("password", "sad2014!Project"));
+			postParameters.add(new BasicNameValuePair("service", "parent_access"));
 			
 			try {
-				jArray = JSONfunction.getJSONfromURL(url, postParameters);
+				jArray = JSONfunction.getJSONfromURL(url, null);
 			} catch (Exception e) {
 			
 			}

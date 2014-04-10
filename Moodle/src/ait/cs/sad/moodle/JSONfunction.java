@@ -14,6 +14,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 public class JSONfunction {
 
@@ -46,13 +47,23 @@ public class JSONfunction {
 				sb.append(line + "\n");
 			}
 			is.close();
+			
+			
+			//result = "[" + sb.toString() + "]";	
 			result = sb.toString();
+			/*if (result.startsWith("{")) {
+				
+			}
+			if (result.startsWith("[")) {
+				result =  sb.toString() ;
+			}*/
+			
 		} catch (Exception e) {
 
 		}
 
 		try {
-			jArray = new JSONArray(result);
+			jArray = new JSONArray(result); 
 		} catch (JSONException e) {
 
 		}
