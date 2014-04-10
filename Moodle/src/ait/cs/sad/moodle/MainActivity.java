@@ -64,7 +64,7 @@ public class MainActivity extends Activity {
 		Editor editor = sharedPref.edit();
 		editor.putString("parent_token", token);
 		editor.commit();
-		Toast.makeText(MainActivity.this, sharedPref.getString("parent_token", "0"), 5000).show();
+		Toast.makeText(MainActivity.this, "Token " + sharedPref.getString("parent_token", "0") + " saved !", 5000).show();
 	}
 	
 	private String readToken() {
@@ -121,21 +121,22 @@ public class MainActivity extends Activity {
 		@Override
 		protected void onPostExecute(Void result) {
 			progressDialog.dismiss();
-			if (jArray != null) {
-				Toast.makeText(MainActivity.this, jArray.toString(), 5000).show();
-			} else {
-				Toast.makeText(MainActivity.this, "NULL ARRAY", 5000).show();
-			}
+			
 			super.onPostExecute(result);
-			try {
-				JSONObject jObject = jArray.getJSONObject(0);
-				token = jObject.getString("token");
-			} catch (JSONException e) {
-				e.printStackTrace();
+			if (jArray == null) {
+				Toast.makeText(MainActivity.this, "Could not verify your token !", 5000).show();
+			} else {
+				
+				try {
+					JSONObject jObject = jArray.getJSONObject(0);
+					token = jObject.getString("token");
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				saveToken();
+				Intent intent = new Intent(MainActivity.this, Student.class);
+				startActivity(intent);
 			}
-			saveToken();
-			Intent intent = new Intent(MainActivity.this, Student.class);
-			startActivity(intent);
 		}
 		
 	}

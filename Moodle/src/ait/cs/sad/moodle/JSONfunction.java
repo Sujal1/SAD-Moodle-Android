@@ -47,16 +47,12 @@ public class JSONfunction {
 				sb.append(line + "\n");
 			}
 			is.close();
-			
-			
-			//result = "[" + sb.toString() + "]";	
-			result = sb.toString();
-			/*if (result.startsWith("{")) {
 				
+			result = sb.toString();
+			
+			if (result.startsWith("{")) {
+				result = "[" + result+ "]";
 			}
-			if (result.startsWith("[")) {
-				result =  sb.toString() ;
-			}*/
 			
 		} catch (Exception e) {
 

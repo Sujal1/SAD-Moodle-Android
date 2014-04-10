@@ -14,6 +14,9 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -46,6 +49,7 @@ public class Student extends Activity {
 		String url = "http://203.159.6.202/moodle/webservice/rest/server.php";
 		List<String> name_list = new ArrayList<String>();
 		List<String> level_list = new ArrayList<String>();
+		String [] name;
 		
 		public MyAsyncTask() {
 			
@@ -73,37 +77,39 @@ public class Student extends Activity {
 		@Override
 		protected void onPostExecute(Void result) {
 			progressDialog.dismiss();
-			if (jArray != null) {
-				Toast.makeText(Student.this, jArray.toString(), 50000).show();
-				//Toast.makeText(Student.this, String.valueOf(jArray.length()), 50000).show();
-				
-			} else {
-				Toast.makeText(Student.this, "NULL", 5000).show();
-			}
 			
 			super.onPostExecute(result);
 			
-			Log.d("TT", String.valueOf(jArray.length()));
-			for (int i = 0; i < jArray.length(); i++) {
-				JSONObject jObject;
-				try {
-					jObject = jArray.getJSONObject(i);
-					String child_name = jObject.getString("fullname").toUpperCase();
-					name_list.add(child_name);
-					Toast.makeText(Student.this, child_name, 5000).show();
-					//String child_level = jObject.getString("level");
-					//level_list.add(child_level);
-				} catch (JSONException e) {
-					e.printStackTrace();
+			if (jArray == null) {
+				Toast.makeText(Student.this, "You have no children mapped !", 50000).show();
+			} else {
+				for (int i = 0; i < jArray.length(); i++) {
+					JSONObject jObject;
+					try {
+						jObject = jArray.getJSONObject(i);
+						String child_name = jObject.getString("fullname").toUpperCase();
+						name_list.add(child_name);
+						//Toast.makeText(Student.this, child_name, 5000).show();
+						//String child_level = jObject.getString("level");
+						//level_list.add(child_level);
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+					name = new String[name_list.size()];
+		    		name_list.toArray(name);
 				}
-				String [] name = new String[name_list.size()];
-	    		name_list.toArray(name);
-	    		
-	    		MySimpleArrayAdapter adapter = new MySimpleArrayAdapter(Student.this, name);
-	    		list_children.setAdapter(adapter);
+					MySimpleArrayAdapter adapter = new MySimpleArrayAdapter(Student.this, name);
+		    		list_children.setAdapter(adapter);
+		    		list_children.setOnItemClickListener(new OnItemClickListener() {
+
+						@Override
+						public void onItemClick(AdapterView<?> arg0, View arg1,
+								int arg2, long arg3) {
+							Toast.makeText(Student.this, "Function not yet implemented !", 5000).show();
+							
+						}
+					});
 			}
-		
 		}
-		
 	}
 }
