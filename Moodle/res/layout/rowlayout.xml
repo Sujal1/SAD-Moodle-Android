@@ -12,7 +12,7 @@
         android:paddingBottom="10dp" android:paddingTop="10dp">
 
     <ImageView
-        android:id="@+id/imageView1"
+        android:id="@+id/imageView_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/child_logo" />
@@ -24,7 +24,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginLeft="30dp"
         android:layout_marginTop="14dp"
-        android:layout_toRightOf="@+id/imageView1"
+        android:layout_toRightOf="@+id/imageView_label"
         android:text="TextView" />
 </RelativeLayout>
 </RelativeLayout>
