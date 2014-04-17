@@ -13,8 +13,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -50,7 +56,6 @@ public class Student extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.activity_main_actions, menu);
-
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -70,6 +75,18 @@ public class Student extends Activity {
 		}
 	}
 
+	private boolean checkConnection() {
+
+		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo netInfo = cm.getActiveNetworkInfo();
+		if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+			//Toast.makeText(Student.this, "TRUE", 5000).show();
+			return true;
+		}
+		//Toast.makeText(Student.this, "FALSE", 5000).show();
+		return false;
+	}
+
 	public class MyAsyncTask extends AsyncTask<Void, Void, Void> {
 
 		private ProgressDialog progressDialog;
@@ -80,7 +97,8 @@ public class Student extends Activity {
 		List<String> level_list = new ArrayList<String>();
 		List<String> id_list = new ArrayList<String>();
 		String[] name, id;
-
+		int temp = 0;
+		
 		public MyAsyncTask() {
 
 		}
@@ -95,43 +113,87 @@ public class Student extends Activity {
 		@Override
 		protected Void doInBackground(Void... params) {
 
-			try {
-				jArray = JSONfunction
-						.getJSONfromURL(
-								url
-										+ "?wstoken="
-										+ sharedPref.getString("parent_token",
-												"0")
-										+ "&wsfunction=local_wstemplate_get_child&moodlewsrestformat=json",
-								null);
-				// jArray = JSONfunction.getJSONfromURL(url+"?wstoken=1234567",
-				// null);
-			} catch (Exception e) {
-			
-			}
-				
-			if (jArray != null) {
-				for (int i = 0; i < jArray.length(); i++) {
-					JSONObject jObject;
-					try {
-						jObject = jArray.getJSONObject(i);
-						name_list.add(jObject.getString("fullname")
-								.toUpperCase());
-						id_list.add(jObject.getString("id"));
-						// Toast.makeText(Student.this, child_name,
-						// 5000).show();
-						// String child_level = jObject.getString("level");
-						// level_list.add(child_level);
-					} catch (JSONException e) {
-						e.printStackTrace();
-					}
-					name = new String[name_list.size()];
-					name_list.toArray(name);
-					id = new String[id_list.size()];
-					id_list.toArray(id);
+			if (checkConnection()) {
+			/**********CONNNECTED TO THE NETWORK***********************/
+				try {
+					jArray = JSONfunction
+							.getJSONfromURL(
+									url
+											+ "?wstoken="
+											+ sharedPref.getString("parent_token",
+													"0")
+											+ "&wsfunction=local_wstemplate_get_child&moodlewsrestformat=json",
+									null);
+					// jArray = JSONfunction.getJSONfromURL(url+"?wstoken=1234567",
+					// null);
+				} catch (Exception e) {
+	
 				}
+	
+				if (jArray != null) {
+					SQLiteDatabase db = openOrCreateDatabase("MyDatabase", MODE_PRIVATE, null);
+					db.execSQL("CREATE TABLE IF NOT EXISTS Student (ID VARCHAR, Name VARCHAR);");
+					String sql = "SELECT * FROM Student;";
+			    	Cursor c = db.rawQuery(sql, null);
+					if (c.getCount() == 0) {
+						temp = 1;
+					}
+					for (int i = 0; i < jArray.length(); i++) {
+						JSONObject jObject;
+						try {
+							jObject = jArray.getJSONObject(i);
+							String name = jObject.getString("fullname")
+									.toUpperCase();
+							name_list.add(name);
+							String id = jObject.getString("id");
+							id_list.add(id);
+						
+							/*** SAVE INTO SQLITE ***/
+							if (temp == 1) {
+								String sql1="INSERT INTO Student (ID, Name)"+" VALUES('" +id+ "','" + name +"');";
+					    		db.execSQL(sql1);
+							} else {
+								String sql2 = "SELECT * FROM Student WHERE ID='"+id+"'";
+						    	Cursor c2 = db.rawQuery(sql2, null);
+						    	if (c2.getCount()==0) {
+						    		String sql3="INSERT INTO Student (ID, Name)"+" VALUES('" +id+ "','" + name +"');";
+						    		db.execSQL(sql3);
+						    	}
+							}
+							/*** SAVE FINISH **/
+							
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+						/*name = new String[name_list.size()];
+						name_list.toArray(name);
+						id = new String[id_list.size()];
+						id_list.toArray(id);*/
+					}
+				}
+			} else {
+			/**********NOT CONNNECTED TO THE NETWORK***********************/
+				SQLiteDatabase db = openOrCreateDatabase("MyDatabase", MODE_PRIVATE, null);
+				db.execSQL("CREATE TABLE IF NOT EXISTS Student (ID VARCHAR, Name VARCHAR);");
+				String sql = "SELECT * FROM Student;";
+		    	Cursor c = db.rawQuery(sql, null);
+				if (c.getCount() == 0) {
+					c.close();
+					db.close();
+				} else {	
+					c.moveToFirst();
+					do{
+						name_list.add(c.getString(c.getColumnIndex("Name")));
+						id_list.add(c.getString(c.getColumnIndex("ID")));
+					}while (c.moveToNext());
+				}
+				jArray = new JSONArray();
+				jArray.put(1);
 			}
-			
+			name = new String[name_list.size()];
+			name_list.toArray(name);
+			id = new String[id_list.size()];
+			id_list.toArray(id);
 			return null;
 		}
 
@@ -146,7 +208,7 @@ public class Student extends Activity {
 						5000).show();
 			} else {
 				Toast.makeText(Student.this, jArray.toString(), 5000).show();
-				
+
 				MySimpleArrayAdapter adapter = new MySimpleArrayAdapter(
 						Student.this, name, 1);
 				list_children.setAdapter(adapter);

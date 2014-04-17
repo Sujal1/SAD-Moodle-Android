@@ -11,8 +11,12 @@ import ait.cs.sad.moodle.Student.MyAsyncTask;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -20,6 +24,8 @@ public class Course extends Activity {
 
 	String student_id;
 	ListView list_course;
+	public static final String MyPREFERENCES = "MyPrefs";
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -33,6 +39,29 @@ public class Course extends Activity {
 		new MyAsyncTask().execute();
 	}
 
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.activity_main_actions, menu);
+		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Take appropriate action for each action item click
+		switch (item.getItemId()) {
+		case R.id.action_logout:
+			SharedPreferences sharedPref = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+			Editor editor = sharedPref.edit();
+			editor.putString("parent_token", "0");
+			editor.commit();
+			Toast.makeText(Course.this, "Token deleted", 5000).show();
+			return true;
+
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
 	public class MyAsyncTask extends AsyncTask<Void, Void, Void> {
 
 		private ProgressDialog progressDialog;
