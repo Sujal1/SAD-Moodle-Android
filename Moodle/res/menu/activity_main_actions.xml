@@ -3,6 +3,11 @@
     <!-- Search / will display always -->
     <item android:id="@+id/action_logout"
           android:icon="@drawable/ic_action_about"
-          android:title="Search"
+          android:title="Logout"
           android:showAsAction="ifRoom"/>
+     <item android:id="@+id/action_synchronise"
+          android:icon="@drawable/ic_launcher"
+          android:title="Load"
+          android:showAsAction="ifRoom"/>
+     
 </menu>

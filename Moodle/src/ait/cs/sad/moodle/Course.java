@@ -2,21 +2,22 @@ package ait.cs.sad.moodle;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import ait.cs.sad.moodle.Student.MyAsyncTask;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.os.AsyncTask;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -26,6 +27,13 @@ public class Course extends Activity {
 	ListView list_course;
 	public static final String MyPREFERENCES = "MyPrefs";
 	
+	private MySimpleArrayAdapter adapter;
+	
+	SharedPreferences sharedPref;
+	
+	List<String> course_ids = new ArrayList<String>();
+	List<String> course_names = new ArrayList<String>();
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -33,11 +41,59 @@ public class Course extends Activity {
 
 		setContentView(R.layout.course);
 		
+		sharedPref = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+		
 		list_course = (ListView) findViewById(R.id.listView_course);
 		student_id = getIntent().getExtras().getString("student_id");
 
-		new MyAsyncTask().execute();
+		//new MyAsyncTask().execute();
+		
+		loadCourses();
 	}
+
+	
+	
+public void loadCourses() {
+		
+	
+		/********** LOAD LOCAL SQLITE DATABASE ***********************/
+		SQLiteDatabase db = openOrCreateDatabase("MyDatabase", MODE_PRIVATE,
+				null);
+		db.execSQL("CREATE TABLE IF NOT EXISTS Course (courseID VARCHAR, studentID VARCHAR, Name VARCHAR);");
+		String sql = "SELECT * FROM Course WHERE studentID = '" + student_id + "';";
+		Cursor c = db.rawQuery(sql, null);
+		if (c.getCount() == 0) {
+			Toast.makeText(Course.this, "NULLLLLLLLLL", Toast.LENGTH_SHORT).show();
+			c.close();
+			db.close();
+		} else {
+			c.moveToFirst();
+			do {
+				
+				course_ids.add(c.getString(c.getColumnIndex("courseID")));
+				course_names.add(c.getString(c.getColumnIndex("Name")));
+			} while (c.moveToNext());
+			
+					
+			adapter = new MySimpleArrayAdapter(
+					Course.this, course_names, 2);
+			
+			list_course.setAdapter(adapter);
+			list_course.setOnItemClickListener(new OnItemClickListener() {
+
+				@Override
+				public void onItemClick(AdapterView<?> arg0, View arg1,
+						int student_row_count, long arg3) {
+					/*Intent i = new Intent(Student.this, Course.class);
+					i.putExtra("student_id", id_list.get(student_row_count));
+					startActivity(i);*/
+				}
+			});
+		}
+		
+	}
+
+
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -51,84 +107,49 @@ public class Course extends Activity {
 		// Take appropriate action for each action item click
 		switch (item.getItemId()) {
 		case R.id.action_logout:
-			SharedPreferences sharedPref = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+			
 			Editor editor = sharedPref.edit();
 			editor.putString("parent_token", "0");
 			editor.commit();
-			Toast.makeText(Course.this, "Token deleted", 5000).show();
+			Toast.makeText(Course.this, "Token deleted", Toast.LENGTH_SHORT).show();
 			return true;
-
+		
+		case R.id.action_synchronise:
+			if (checkConnection()) {
+				
+				 try {
+					new Synchronizer(Course.this, sharedPref.getString(
+								"parent_token", "0")).execute().get();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				 course_names.clear();
+				 adapter.notifyDataSetChanged();
+				 loadCourses();
+			} else {
+				Toast.makeText(Course.this, "No Network Connection", Toast.LENGTH_SHORT).show();
+			}
+			return true;
+			
+			
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	public class MyAsyncTask extends AsyncTask<Void, Void, Void> {
+	
+	
+	private boolean checkConnection() {
 
-		private ProgressDialog progressDialog;
-		JSONArray jArray;
-		String url = "http://203.159.6.202/moodle/course_temp.php?student_id="
-				+ student_id;
-		List<String> coursename_list = new ArrayList<String>();
-		List<String> courseid_list = new ArrayList<String>();
-		String[] name, id;
-		int x =  1;
-		
-		public MyAsyncTask() {
-
+		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo netInfo = cm.getActiveNetworkInfo();
+		if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+			return true;
 		}
-
-		@Override
-		protected void onPreExecute() {
-			progressDialog = new ProgressDialog(Course.this);
-			progressDialog.show();
-			super.onPreExecute();
-		}
-
-		@Override
-		protected Void doInBackground(Void... params) {
-
-			try {
-				jArray = JSONfunction.getJSONfromURL(url, null);
-				
-			} catch (Exception e) {
-
-			}
-			
-			if (jArray != null) {
-				JSONObject jObject;
-				try {
-					jObject = jArray.getJSONObject(0);
-					for (int i = 0; i < jObject.length(); i++) {
-						coursename_list.add(jObject.getString("course"+x));
-						x++;
-					}
-					//courseid_list.add(jObject.getString("id"));
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-				name = new String[coursename_list.size()];
-				coursename_list.toArray(name);
-				/*id = new String[courseid_list.size()];
-				courseid_list.toArray(id);*/
-			}
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(Void result) {
-			progressDialog.dismiss();
-
-			super.onPostExecute(result);
-
-			if (jArray == null) {
-				Toast.makeText(Course.this, "No courses enrolled !", 50000)
-						.show();
-				Course.this.finish();
-			} else {
-				MySimpleArrayAdapter adapter = new MySimpleArrayAdapter(
-						Course.this, name, 2);
-				list_course.setAdapter(adapter);		
-			}
-		}
+		return false;
 	}
+	
 }

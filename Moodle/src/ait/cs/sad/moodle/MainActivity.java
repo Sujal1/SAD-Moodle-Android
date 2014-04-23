@@ -43,41 +43,42 @@ public class MainActivity extends Activity {
 		if (saved_token != "0") {
 			Intent i = new Intent(MainActivity.this, Student.class);
 			startActivity(i);
-		}
-		setContentView(R.layout.activity_main);
-		et_username = (EditText) findViewById(R.id.editText_username);
-		et_password = (EditText) findViewById(R.id.editText_password);
+		} else {
+			setContentView(R.layout.activity_main);
+			et_username = (EditText) findViewById(R.id.editText_username);
+			et_password = (EditText) findViewById(R.id.editText_password);
 
-		final boolean networkConnected = checkConnection();
+			// final boolean networkConnected = checkConnection();
 
-		Button btn_login = (Button) findViewById(R.id.button_login);
-		btn_login.setOnClickListener(new OnClickListener() {
-	
+			Button btn_login = (Button) findViewById(R.id.button_login);
+			btn_login.setOnClickListener(new OnClickListener() {
+
 				@Override
 				public void onClick(View v) {
 					String username = et_username.getEditableText().toString();
 					String password = et_password.getEditableText().toString();
-					if (networkConnected)
+					if (checkConnection())
 						new MyAsyncTask().execute();
 					else
-						Toast.makeText(MainActivity.this, "Not connected to the network", 5000).show();
-	
+						Toast.makeText(MainActivity.this,
+								"Connect to a network first", 5000).show();
+
 				}
-	
+
 			});
-		
-		
+		}
+
 	}
 
 	private boolean checkConnection() {
-		
+
 		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo netInfo = cm.getActiveNetworkInfo();
 		if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-			Toast.makeText(MainActivity.this, "TRUE", 5000).show();
+			// Toast.makeText(MainActivity.this, "TRUE", 5000).show();
 			return true;
 		}
-		Toast.makeText(MainActivity.this, "FALSE", 5000).show();
+		Toast.makeText(MainActivity.this, "No Network Connection", 5000).show();
 		return false;
 	}
 
@@ -96,12 +97,11 @@ public class MainActivity extends Activity {
 		return sharedPref.getString("parent_token", "0");
 	}
 
-	/*@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}*/
+	/*
+	 * @Override public boolean onCreateOptionsMenu(Menu menu) { // Inflate the
+	 * menu; this adds items to the action bar if it is present.
+	 * getMenuInflater().inflate(R.menu.main, menu); return true; }
+	 */
 
 	public class MyAsyncTask extends AsyncTask<Void, Void, Void> {
 
