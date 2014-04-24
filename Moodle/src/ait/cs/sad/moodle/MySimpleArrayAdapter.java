@@ -58,6 +58,9 @@ public class MySimpleArrayAdapter extends ArrayAdapter<String> {
 		if (check == 2) {
 			imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.course));
 		}
+		if (check == 3) {
+			imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.calendar));
+		}
 		textView1.setText(name.get(position));
 		
 		return rowView;

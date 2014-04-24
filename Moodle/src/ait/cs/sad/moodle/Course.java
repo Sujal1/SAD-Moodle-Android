@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutionException;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
@@ -83,10 +84,21 @@ public void loadCourses() {
 
 				@Override
 				public void onItemClick(AdapterView<?> arg0, View arg1,
-						int student_row_count, long arg3) {
-					/*Intent i = new Intent(Student.this, Course.class);
-					i.putExtra("student_id", id_list.get(student_row_count));
+						int course_id, long arg3) {
+					/*Intent i = new Intent(Course.this, Attendance.class);
+					i.putExtra("student_id", student_id);
+					i.putExtra("course_id", course_id);
 					startActivity(i);*/
+					
+					Intent i = new Intent(Course.this, Attendance.class);
+					Bundle extras = new Bundle();
+					extras.putString("student_id", student_id);
+					extras.putInt("course_id", course_id);
+					i.putExtras(extras);
+					startActivity(i);
+					
+					
+					//Toast.makeText(Course.this, String.valueOf(course_id), Toast.LENGTH_LONG).show();
 				}
 			});
 		}

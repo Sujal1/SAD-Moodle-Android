@@ -118,6 +118,7 @@ public class MainActivity extends Activity {
 		@Override
 		protected void onPreExecute() {
 			progressDialog = new ProgressDialog(MainActivity.this);
+			progressDialog.setMessage("Logging in..");
 			progressDialog.show();
 			super.onPreExecute();
 		}

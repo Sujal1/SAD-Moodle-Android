@@ -33,6 +33,7 @@ public class Synchronizer extends AsyncTask<Void, Void, Void> {
 	protected void onPreExecute() {
 		progressDialog = new ProgressDialog(context);
 		progressDialog.show();
+		progressDialog.setMessage("Fetching Data..");
 		super.onPreExecute();
 	}
 

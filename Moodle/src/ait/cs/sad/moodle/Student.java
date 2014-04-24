@@ -16,6 +16,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -93,6 +94,7 @@ public class Student extends Activity {
 				public void onItemClick(AdapterView<?> arg0, View arg1,
 						int student_row_count, long arg3) {
 					Intent i = new Intent(Student.this, Course.class);
+					Log.d("!!!!!!!!!!STUDENT_ID", id_list.get(student_row_count));
 					i.putExtra("student_id", id_list.get(student_row_count));
 					startActivity(i);
 				}
@@ -101,6 +103,14 @@ public class Student extends Activity {
 		
 	}
 
+	/*@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		MenuItem comment_menu = menu.findItem(R.id.action_comment);
+		comment_menu.setVisible(false);
+		
+		return super.onPrepareOptionsMenu(menu);
+	}*/
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();

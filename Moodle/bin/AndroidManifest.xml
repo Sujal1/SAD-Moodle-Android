@@ -32,6 +32,9 @@
          <activity
             android:name="ait.cs.sad.moodle.Course" />
          
+          <activity
+            android:name="ait.cs.sad.moodle.Attendance" />
+          
     </application>
 
 </manifest>
