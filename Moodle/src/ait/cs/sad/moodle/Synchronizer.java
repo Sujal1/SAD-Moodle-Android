@@ -19,7 +19,7 @@ import android.util.Log;
 public class Synchronizer extends AsyncTask<Void, Void, Void> {
 
 	private ProgressDialog progressDialog;
-	private String url = "http://203.159.6.202/moodle/webservice/rest/server.php";
+	//private String url = "http://203.159.6.202/moodle/webservice/rest/server.php";
 	private String token;
 	private String server;
 	private int temp = 0;
@@ -131,14 +131,21 @@ public class Synchronizer extends AsyncTask<Void, Void, Void> {
 	private List<String> synchronizeStudents() {
 		List<String> student_id = new ArrayList<String>();
 		try {
-
-			jArray = JSONfunction
+			String url = "http://" + server + "/moodle/webservice/rest/server.php?wstoken="
+					+ token
+					+ "&wsfunction=local_wstemplate_get_child&moodlewsrestformat=json";
+			
+	
+			/*jArray = JSONfunction
 					.getJSONfromURL(
 							url
 									+ "?wstoken="
 									+ token
 									+ "&wsfunction=local_wstemplate_get_child&moodlewsrestformat=json",
-							null);
+							null);*/
+			
+			jArray = JSONfunction
+					.getJSONfromURL(url, null);
 
 		} catch (Exception e) {
 			// Log.d("!!!!!!!!!!!!!!", "NO NETWORK");
@@ -147,8 +154,8 @@ public class Synchronizer extends AsyncTask<Void, Void, Void> {
 		if (jArray != null) {
 			SQLiteDatabase db = context.openOrCreateDatabase("MyDatabase",
 					Context.MODE_PRIVATE, null);
-			db.execSQL("CREATE TABLE IF NOT EXISTS Student (studentID VARCHAR, Name VARCHAR);");
-			String sql = "SELECT * FROM Student;";
+			db.execSQL("CREATE TABLE IF NOT EXISTS Student (studentID VARCHAR, Name VARCHAR, parentID VARCHAR);");
+			String sql = "SELECT * FROM Student WHERE parentID='"+ token + "';";
 			Cursor c = db.rawQuery(sql, null);
 			if (c.getCount() == 0) {
 				temp = 1;
@@ -166,16 +173,20 @@ public class Synchronizer extends AsyncTask<Void, Void, Void> {
 					Log.d("********", id);
 					/*** SAVE INTO SQLITE ***/
 					if (temp == 1) {
-						String sql1 = "INSERT INTO Student (studentID, Name)"
-								+ " VALUES('" + id + "','" + name + "');";
+						/*String sql1 = "INSERT INTO Student (studentID, Name)"
+								+ " VALUES('" + id + "','" + name + "');";*/
+						String sql1 = "INSERT INTO Student (studentID, Name, parentID)"
+								+ " VALUES('" + id + "','" + name + "', '" + token +"');";
 						db.execSQL(sql1);
 					} else {
 						String sql2 = "SELECT * FROM Student WHERE studentID='"
 								+ id + "'";
 						Cursor c2 = db.rawQuery(sql2, null);
 						if (c2.getCount() == 0) {
-							String sql3 = "INSERT INTO Student (studentID, Name)"
-									+ " VALUES('" + id + "','" + name + "');";
+							/*String sql3 = "INSERT INTO Student (studentID, Name)"
+									+ " VALUES('" + id + "','" + name + "');";*/
+							String sql3 = "INSERT INTO Student (studentID, Name, parentID)"
+									+ " VALUES('" + id + "','" + name + "', '" + token +"');";
 							db.execSQL(sql3);
 						}
 						c2.close();

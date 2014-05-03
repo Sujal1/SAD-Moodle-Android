@@ -1,5 +1,9 @@
 package ait.cs.sad.moodle;
 
+import java.util.ArrayList;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -89,11 +93,16 @@ public class MainActivity extends Activity implements OnClickListener {
 				Toast.makeText(MainActivity.this,
 						"Missing fields..", Toast.LENGTH_SHORT).show();
 			}
-			else if (checkConnection())
+			else if (checkConnection()) {
+				moodle_server = "203.159.6.202";
+				username = "parent1";
+				password = "sad2014!Project";
 				new MyAsyncTask().execute();
-			else
+			}
+			else {
 				Toast.makeText(MainActivity.this,
 						"No connnection", Toast.LENGTH_LONG).show();
+			}
 		}
 	}
 	
@@ -138,6 +147,8 @@ public class MainActivity extends Activity implements OnClickListener {
 		private ProgressDialog progressDialog;
 		JSONArray jArray;
 		/*String url = "http://203.159.6.202/moodle/login/token.php?username=parent1&password=sad2014!Project&service=parent_access";*/
+		
+		
 		
 		String url = "http://" + moodle_server + "/moodle/login/token.php?username=" + username + "&password=" + password + "&service=parent_access";
 

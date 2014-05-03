@@ -31,7 +31,7 @@ public class Student extends Activity {
 	
 	private MySimpleArrayAdapter adapter;
 	ListView list_children;
-	
+		
 	List<String> name_list = new ArrayList<String>();
 	List<String> level_list = new ArrayList<String>();
 	List<String> id_list = new ArrayList<String>();
@@ -50,11 +50,12 @@ public class Student extends Activity {
 
 	public void loadData() {
 		
+		String token = sharedPref.getString("parent_token", "0");
 		/********** LOAD LOCAL SQLITE DATABASE ***********************/
 		SQLiteDatabase db = openOrCreateDatabase("MyDatabase", MODE_PRIVATE,
 				null);
-		db.execSQL("CREATE TABLE IF NOT EXISTS Student (studentID VARCHAR, Name VARCHAR);");
-		String sql = "SELECT * FROM Student;";
+		db.execSQL("CREATE TABLE IF NOT EXISTS Student (studentID VARCHAR, Name VARCHAR, parentID VARCHAR);");
+		String sql = "SELECT * FROM Student WHERE parentID = '" + token+ "';";
 		Cursor c = db.rawQuery(sql, null);
 		if (c.getCount() == 0) {
 			Toast.makeText(Student.this, "NULLLLLLLLLL", Toast.LENGTH_SHORT).show();
