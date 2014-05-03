@@ -13,43 +13,26 @@
         android:id="@+id/editText_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/editText_username"
-        android:layout_below="@id/editText_username"
-        android:layout_alignRight="@id/editText_username"
-        android:layout_marginTop="25dp"
-        android:background="@drawable/button"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
         android:ems="10"
-        android:hint="Password"
-        android:inputType="textPassword"
+        android:paddingTop="5dp"
         android:paddingBottom="5dp"
         android:paddingLeft="5dp"
-        android:paddingTop="5dp" >
+        android:background="@drawable/button"
+        android:inputType="textPassword"
+        android:hint="Password" >
 
         <requestFocus />
     </EditText>
 
     <EditText
-        android:id="@+id/editText_server"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/editText_username"
-        android:layout_alignRight="@id/editText_username"
-        android:layout_alignLeft="@id/editText_username"
-        android:ems="10"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
-        android:paddingLeft="5dp"
-        android:layout_marginBottom="25dp"
-        android:background="@drawable/button"
-        android:inputType="text"
-        android:hint="Server" />
-    
-    <EditText
         android:id="@+id/editText_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/editText_password"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
+        android:layout_marginBottom="25dp"
         android:ems="10"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
@@ -75,7 +58,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="5dp"
-        android:layout_above="@id/editText_server"
+        android:layout_above="@id/editText_username"
         android:src="@drawable/moodle_text" />
 
 </RelativeLayout>

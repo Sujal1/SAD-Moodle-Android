@@ -35,28 +35,30 @@ public final class R {
         public static final int refresh=0x7f02000b;
     }
     public static final class id {
-        public static final int action_comment=0x7f09000a;
-        public static final int action_logout=0x7f09000b;
-        public static final int action_settings=0x7f09000d;
-        public static final int action_synchronise=0x7f09000c;
-        public static final int button_login=0x7f090002;
+        public static final int action_comment=0x7f09000b;
+        public static final int action_logout=0x7f09000c;
+        public static final int action_settings=0x7f09000e;
+        public static final int action_synchronise=0x7f09000d;
+        public static final int button_login=0x7f090003;
         public static final int editText_password=0x7f090000;
+        public static final int editText_server=0x7f090002;
         public static final int editText_username=0x7f090001;
-        public static final int imageView1=0x7f090003;
-        public static final int imageView_label=0x7f090007;
-        public static final int label1=0x7f090008;
-        public static final int listView_attendance=0x7f090005;
-        public static final int listView_children=0x7f090009;
-        public static final int listView_course=0x7f090006;
-        public static final int textView1=0x7f090004;
+        public static final int imageView1=0x7f090004;
+        public static final int imageView_label=0x7f090008;
+        public static final int label1=0x7f090009;
+        public static final int listView_attendance=0x7f090006;
+        public static final int listView_children=0x7f09000a;
+        public static final int listView_course=0x7f090007;
+        public static final int textView1=0x7f090005;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
-        public static final int attendance=0x7f030001;
-        public static final int course=0x7f030002;
-        public static final int rowlayout=0x7f030003;
-        public static final int students=0x7f030004;
-        public static final int tempactivity_main=0x7f030005;
+        public static final int activity_main_bk=0x7f030001;
+        public static final int attendance=0x7f030002;
+        public static final int course=0x7f030003;
+        public static final int rowlayout=0x7f030004;
+        public static final int students=0x7f030005;
+        public static final int tempactivity_main=0x7f030006;
     }
     public static final class menu {
         public static final int activity_main_actions=0x7f080000;
