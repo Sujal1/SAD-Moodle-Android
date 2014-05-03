@@ -55,9 +55,6 @@ public class Course extends Activity {
 	
 	
 public void loadCourses() {
-		
-	
-		/********** LOAD LOCAL SQLITE DATABASE ***********************/
 		SQLiteDatabase db = openOrCreateDatabase("MyDatabase", MODE_PRIVATE,
 				null);
 		db.execSQL("CREATE TABLE IF NOT EXISTS Course (courseID VARCHAR, studentID VARCHAR, Name VARCHAR);");
@@ -70,12 +67,10 @@ public void loadCourses() {
 		} else {
 			c.moveToFirst();
 			do {
-				
 				course_ids.add(c.getString(c.getColumnIndex("courseID")));
 				course_names.add(c.getString(c.getColumnIndex("Name")));
 			} while (c.moveToNext());
 			
-					
 			adapter = new MySimpleArrayAdapter(
 					Course.this, course_names, 2);
 			
@@ -96,16 +91,11 @@ public void loadCourses() {
 					extras.putInt("course_id", course_id);
 					i.putExtras(extras);
 					startActivity(i);
-					
-					
-					//Toast.makeText(Course.this, String.valueOf(course_id), Toast.LENGTH_LONG).show();
 				}
 			});
 		}
 		
 	}
-
-
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

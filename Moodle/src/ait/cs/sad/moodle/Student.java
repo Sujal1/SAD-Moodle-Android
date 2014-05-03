@@ -14,7 +14,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -49,32 +48,21 @@ public class Student extends Activity {
 	}
 
 	public void loadData() {
-		
-		String token = sharedPref.getString("parent_token", "0");
-		/********** LOAD LOCAL SQLITE DATABASE ***********************/
 		SQLiteDatabase db = openOrCreateDatabase("MyDatabase", MODE_PRIVATE,
 				null);
 		db.execSQL("CREATE TABLE IF NOT EXISTS Student (studentID VARCHAR, Name VARCHAR, parentID VARCHAR);");
-		String sql = "SELECT * FROM Student WHERE parentID = '" + token+ "';";
+		String sql = "SELECT * FROM Student WHERE parentID = '" + sharedPref.getString("parent_token", "0") + "';";
 		Cursor c = db.rawQuery(sql, null);
 		if (c.getCount() == 0) {
-			Toast.makeText(Student.this, "NULLLLLLLLLL", Toast.LENGTH_SHORT).show();
+			Toast.makeText(Student.this, "Refresh to load data.", Toast.LENGTH_SHORT).show();
 			c.close();
 			db.close();
 		} else {
-			
-			
 			c.moveToFirst();
 			do {
-				
 				name_list.add(c.getString(c.getColumnIndex("Name")));
 				id_list.add(c.getString(c.getColumnIndex("studentID")));
 			} while (c.moveToNext());
-			
-			/*name = new String[name_list.size()];
-			name_list.toArray(name);
-			id = new String[id_list.size()];
-			id_list.toArray(id);*/
 			
 			adapter = new MySimpleArrayAdapter(
 					Student.this, name_list, 1);
@@ -86,7 +74,6 @@ public class Student extends Activity {
 				public void onItemClick(AdapterView<?> arg0, View arg1,
 						int student_row_count, long arg3) {
 					Intent i = new Intent(Student.this, Course.class);
-					Log.d("!!!!!!!!!!STUDENT_ID", id_list.get(student_row_count));
 					i.putExtra("student_id", id_list.get(student_row_count));
 					startActivity(i);
 				}
@@ -95,14 +82,6 @@ public class Student extends Activity {
 		
 	}
 
-	/*@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		MenuItem comment_menu = menu.findItem(R.id.action_comment);
-		comment_menu.setVisible(false);
-		
-		return super.onPrepareOptionsMenu(menu);
-	}*/
-	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
@@ -114,46 +93,41 @@ public class Student extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Take appropriate action for each action item click
 		switch (item.getItemId()) {
-		case R.id.action_logout:
-			Editor editor = sharedPref.edit();
-			editor.putString("parent_token", "0");
-			editor.putString("moodle_server", "");
-			editor.commit();
-			Toast.makeText(Student.this, "Token deleted", Toast.LENGTH_SHORT).show();
-			return true;
-		case R.id.action_synchronise:
+			case R.id.action_logout:
+				Editor editor = sharedPref.edit();
+				editor.putString("parent_token", "0");
+				editor.putString("moodle_server", "");
+				editor.commit();
+				Toast.makeText(Student.this, "Token deleted", Toast.LENGTH_SHORT).show();
+				return true;
 			
-			if (checkConnection()) {
-				
-				 try {
-					/*new Synchronizer(Student.this, sharedPref.getString(
-								"parent_token", "0")).execute().get();*/
-					 new Synchronizer(Student.this).execute().get();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ExecutionException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+			case R.id.action_synchronise:
+				if (checkConnection()) {
+					try {
+						/*new Synchronizer(Student.this, sharedPref.getString(
+									"parent_token", "0")).execute().get();*/
+						 new Synchronizer(Student.this).execute().get();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					} catch (ExecutionException e) {
+						e.printStackTrace();
+					}
+					if (adapter != null) {
+						 name_list.clear();
+						 adapter.notifyDataSetChanged();
+					}
+					loadData();
+				} else {
+					Toast.makeText(Student.this, "No Network Connection", Toast.LENGTH_SHORT).show();
 				}
-				
-				 if (adapter != null) {
-					 name_list.clear();
-					 adapter.notifyDataSetChanged();
-				 }
-				loadData();
-			} else {
-				Toast.makeText(Student.this, "No Network Connection", Toast.LENGTH_SHORT).show();
-			}
+				return true;
 			
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
+			default:
+				return super.onOptionsItemSelected(item);
 		}
 	}
 
 	private boolean checkConnection() {
-
 		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo netInfo = cm.getActiveNetworkInfo();
 		if (netInfo != null && netInfo.isConnectedOrConnecting()) {
@@ -162,3 +136,12 @@ public class Student extends Activity {
 		return false;
 	}
 }
+
+
+/*@Override
+public boolean onPrepareOptionsMenu(Menu menu) {
+	MenuItem comment_menu = menu.findItem(R.id.action_comment);
+	comment_menu.setVisible(false);
+	
+	return super.onPrepareOptionsMenu(menu);
+}*/

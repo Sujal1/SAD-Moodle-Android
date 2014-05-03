@@ -59,16 +59,6 @@ public class Synchronizer extends AsyncTask<Void, Void, Void> {
 	protected void onPostExecute(Void result) {
 		progressDialog.dismiss();
 		super.onPostExecute(result);
-
-		/*
-		 * if (network == false) { Toast.makeText(context,
-		 * "Not connected to the network", 5000) .show(); } else if (jArray ==
-		 * null) { Toast.makeText(context, "You have no children mapped.", 5000)
-		 * .show(); } else { Intent i = new Intent(context, Student.class);
-		 * startActivity(i); // loadData();
-		 * 
-		 * }
-		 */
 	}
 
 	private void synchronizeCourses(List<String> student_ids) {
@@ -148,7 +138,7 @@ public class Synchronizer extends AsyncTask<Void, Void, Void> {
 					.getJSONfromURL(url, null);
 
 		} catch (Exception e) {
-			// Log.d("!!!!!!!!!!!!!!", "NO NETWORK");
+			
 		}
 
 		if (jArray != null) {
@@ -169,8 +159,7 @@ public class Synchronizer extends AsyncTask<Void, Void, Void> {
 							Locale.ENGLISH);
 					String id = jObject.getString("id");
 					student_id.add(id);
-					Log.d("^^^^^^^^", name);
-					Log.d("********", id);
+					
 					/*** SAVE INTO SQLITE ***/
 					if (temp == 1) {
 						/*String sql1 = "INSERT INTO Student (studentID, Name)"
@@ -203,9 +192,6 @@ public class Synchronizer extends AsyncTask<Void, Void, Void> {
 			// NULL ARRAY
 			Log.d("#############", "NULL JARAY");
 		}
-		/*
-		 * } else { network = false; }
-		 */
 		return student_id;
 	}
 

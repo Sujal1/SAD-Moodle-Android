@@ -1,9 +1,5 @@
 package ait.cs.sad.moodle;
 
-import java.util.ArrayList;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,11 +35,10 @@ public class MainActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		
 		sharedPref = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-
 		String saved_token = readToken();
-
+		
 		if (saved_token != "0") {
 			Intent i = new Intent(MainActivity.this, Student.class);
 			startActivity(i);
@@ -52,27 +47,10 @@ public class MainActivity extends Activity implements OnClickListener {
 			et_username = (EditText) findViewById(R.id.editText_username);
 			et_password = (EditText) findViewById(R.id.editText_password);
 			et_server = (EditText) findViewById(R.id.editText_server);
-			// final boolean networkConnected = checkConnection();
-
-			Button btn_login = (Button) findViewById(R.id.button_login);
-			btn_login.setOnClickListener(MainActivity.this);
 			
-			/* Modified the way button click is implemented to give simpler view to code */
-			/*btn_login.setOnClickListener(new OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-					String username = et_username.getEditableText().toString();
-					String password = et_password.getEditableText().toString();
-					if (checkConnection())
-						new MyAsyncTask().execute();
-					else
-						Toast.makeText(MainActivity.this,
-								"Connect to a network first", 5000).show();
-
-				}
-
-			});*/
+			Button btn_login = (Button) findViewById(R.id.button_login);
+			btn_login.setOnClickListener(MainActivity.this); /* Modified the way button click is implemented to give simpler view to code */
+			
 		}
 
 	}
@@ -85,13 +63,12 @@ public class MainActivity extends Activity implements OnClickListener {
 		/*Action if the login button is pressed*/
 		
 		if (view.getId() == R.id.button_login) {
-			
 			username = et_username.getEditableText().toString();
 			password = et_password.getEditableText().toString();
 			moodle_server = et_server.getEditableText().toString();
 			if (username.equals("") || password.equals("") || moodle_server.equals("")) {
 				Toast.makeText(MainActivity.this,
-						"Missing fields..", Toast.LENGTH_SHORT).show();
+						"Missing fields.", Toast.LENGTH_SHORT).show();
 			}
 			else if (checkConnection()) {
 				moodle_server = "203.159.6.202";
@@ -106,7 +83,6 @@ public class MainActivity extends Activity implements OnClickListener {
 		}
 	}
 	
-	/* Check if connected to the network, true if connected else false */
 	private boolean checkConnection() {
 
 		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -132,27 +108,17 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 
 	private String readToken() {
-
 		return sharedPref.getString("parent_token", "0");
 	}
 
-	/*
-	 * @Override public boolean onCreateOptionsMenu(Menu menu) { // Inflate the
-	 * menu; this adds items to the action bar if it is present.
-	 * getMenuInflater().inflate(R.menu.main, menu); return true; }
-	 */
-
+	
 	public class MyAsyncTask extends AsyncTask<Void, Void, Void> {
 
 		private ProgressDialog progressDialog;
 		JSONArray jArray;
 		/*String url = "http://203.159.6.202/moodle/login/token.php?username=parent1&password=sad2014!Project&service=parent_access";*/
-		
-		
-		
 		String url = "http://" + moodle_server + "/moodle/login/token.php?username=" + username + "&password=" + password + "&service=parent_access";
 
-		// String url = "http://202.28.195.68/api_login.php";
 
 		public MyAsyncTask() {
 
