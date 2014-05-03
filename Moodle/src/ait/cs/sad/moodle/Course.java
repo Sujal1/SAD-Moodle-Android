@@ -130,8 +130,9 @@ public void loadCourses() {
 			if (checkConnection()) {
 				
 				 try {
-					new Synchronizer(Course.this, sharedPref.getString(
-								"parent_token", "0")).execute().get();
+					/*new Synchronizer(Course.this, sharedPref.getString(
+								"parent_token", "0")).execute().get();*/
+					 new Synchronizer(Course.this).execute().get();
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

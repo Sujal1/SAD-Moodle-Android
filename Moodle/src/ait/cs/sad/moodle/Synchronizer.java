@@ -10,6 +10,7 @@ import org.json.JSONObject;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -20,13 +21,23 @@ public class Synchronizer extends AsyncTask<Void, Void, Void> {
 	private ProgressDialog progressDialog;
 	private String url = "http://203.159.6.202/moodle/webservice/rest/server.php";
 	private String token;
+	private String server;
 	private int temp = 0;
 	private JSONArray jArray;
 	private Context context;
-
-	public Synchronizer(Context context, String token) {
+	public static final String MyPREFERENCES = "MyPrefs";
+	
+	/*public Synchronizer(Context context, String token) {
 		this.context = context;
 		this.token = token;
+		SharedPreferences sharedPref = context.getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+	}*/
+	
+	public Synchronizer(Context context) {
+		this.context = context;
+		SharedPreferences sharedPref = context.getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+		this.token = sharedPref.getString("parent_token", "0");
+		this.server = sharedPref.getString("moodle_server", "");
 	}
 
 	@Override
@@ -63,7 +74,12 @@ public class Synchronizer extends AsyncTask<Void, Void, Void> {
 	private void synchronizeCourses(List<String> student_ids) {
 
 		for (String student_id : student_ids) {
-			String url = "http://203.159.6.202/moodle/webservice/rest/server.php?wstoken="
+			/*String url = "http://203.159.6.202/moodle/webservice/rest/server.php?wstoken="
+					+ token
+					+ "&wsfunction=local_wstemplate_get_course&moodlewsrestformat=json&userid="
+					+ student_id;*/
+			
+			String url = "http://" + server + "/moodle/webservice/rest/server.php?wstoken="
 					+ token
 					+ "&wsfunction=local_wstemplate_get_course&moodlewsrestformat=json&userid="
 					+ student_id;
