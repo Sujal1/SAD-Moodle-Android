@@ -35,6 +35,11 @@
           <activity
             android:name="ait.cs.sad.moodle.Attendance" />
           
+           <activity
+            android:name="ait.cs.sad.moodle.Notice" />
+           
+           <service android:name="ait.cs.sad.moodle.MyService"></service>
+          
     </application>
 
 </manifest>

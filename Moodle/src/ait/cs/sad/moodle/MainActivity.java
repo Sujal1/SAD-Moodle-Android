@@ -67,8 +67,8 @@ public class MainActivity extends Activity implements OnClickListener {
 			password = et_password.getEditableText().toString();
 			moodle_server = et_server.getEditableText().toString();
 			if (username.equals("") || password.equals("") || moodle_server.equals("")) {
-				Toast.makeText(MainActivity.this,
-						"Missing fields.", Toast.LENGTH_SHORT).show();
+				/*Toast.makeText(MainActivity.this,
+						"Missing fields.", Toast.LENGTH_SHORT).show();*/
 			}
 			else if (checkConnection()) {
 				moodle_server = "203.159.6.202";
@@ -174,6 +174,9 @@ public class MainActivity extends Activity implements OnClickListener {
 					e.printStackTrace();
 				}
 				saveToken();
+				
+				startService(new Intent(MainActivity.this, MyService.class));
+				
 				Intent intent = new Intent(MainActivity.this, Student.class);
 				startActivity(intent);
 			}
