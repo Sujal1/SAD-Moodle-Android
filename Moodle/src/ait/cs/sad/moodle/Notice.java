@@ -1,12 +1,9 @@
 package ait.cs.sad.moodle;
 
-import android.app.Activity;
-import android.app.NotificationManager;
-import android.content.Context;
 import android.os.Bundle;
 import android.widget.TextView;
 
-public class Notice extends Activity {
+public class Notice extends BaseActivity {
 
 
 	@Override

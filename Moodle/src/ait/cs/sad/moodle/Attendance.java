@@ -27,7 +27,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class Attendance extends Activity {
+public class Attendance extends BaseActivity {
 
 	private String student_id;
 	private String course_id;
@@ -163,9 +163,9 @@ public class Attendance extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Take appropriate action for each action item click
 		switch (item.getItemId()) {
-		case R.id.action_logout:
-
-			return true;
+//		case R.id.action_logout:
+//
+//			return true;
 
 		case R.id.action_synchronise:
 

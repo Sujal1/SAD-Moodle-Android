@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import android.annotation.TargetApi;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -13,7 +15,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,10 +27,10 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class Student extends Activity {
+public class Student extends BaseActivity {
 
-	public static final String MyPREFERENCES = "MyPrefs";
-	SharedPreferences sharedPref;
+//	public static final String MyPREFERENCES = "MyPrefs";
+//	SharedPreferences sharedPref;
 	
 	private MySimpleArrayAdapter adapter;
 	ListView list_children;
@@ -35,14 +39,22 @@ public class Student extends Activity {
 	List<String> level_list = new ArrayList<String>();
 	List<String> id_list = new ArrayList<String>();
 	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		
+		if (getIntent().getBooleanExtra("EXIT", false)) {
+			Log.d("!!!!!!!!!!!!!!", "1");
+			this.finish();
+		}
+		
+		
 		setContentView(R.layout.students);
-
+		
 		list_children = (ListView) findViewById(R.id.listView_children);
-		sharedPref = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+//		sharedPref = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
 		loadData();
 
 	}
@@ -82,25 +94,18 @@ public class Student extends Activity {
 		
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.activity_main_actions, menu);
-		return super.onCreateOptionsMenu(menu);
-	}
+//	@Override
+//	public boolean onCreateOptionsMenu(Menu menu) {
+//		MenuInflater inflater = getMenuInflater();
+//		inflater.inflate(R.menu.activity_main_actions, menu);
+//		return super.onCreateOptionsMenu(menu);
+//	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Take appropriate action for each action item click
 		switch (item.getItemId()) {
-			case R.id.action_logout:
-				Editor editor = sharedPref.edit();
-				editor.putString("parent_token", "0");
-				editor.putString("moodle_server", "");
-				editor.commit();
-				Toast.makeText(Student.this, "Token deleted", Toast.LENGTH_SHORT).show();
-				return true;
-			
+						
 			case R.id.action_synchronise:
 				if (checkConnection()) {
 					try {
@@ -127,14 +132,13 @@ public class Student extends Activity {
 		}
 	}
 
-	private boolean checkConnection() {
-		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo netInfo = cm.getActiveNetworkInfo();
-		if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-			return true;
+	@Override
+		public void onBackPressed() {
+			// TODO Auto-generated method stub
+		confirmLogout();
+			//super.onBackPressed();
+			
 		}
-		return false;
-	}
 }
 
 

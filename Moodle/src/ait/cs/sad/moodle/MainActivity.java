@@ -4,15 +4,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
+import android.annotation.TargetApi;
+import android.app.ActionBar;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -20,7 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class MainActivity extends Activity implements OnClickListener {
+public class MainActivity extends BaseActivity implements OnClickListener {
 
 	EditText et_username;
 	EditText et_password;
@@ -29,25 +27,38 @@ public class MainActivity extends Activity implements OnClickListener {
 	private String username;
 	private String password;
 	private String moodle_server;
-	SharedPreferences sharedPref;
-	public static final String MyPREFERENCES = "MyPrefs";
+//	SharedPreferences sharedPref;
+//	public static final String MyPREFERENCES = "MyPrefs";
 
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+//		
+//		if (getIntent().getBooleanExtra("EXIT", false)) {
+//			Log.d("!!!!!!!!!!!!!!", "1");
+//			this.finish();
+//		}
+		
 		super.onCreate(savedInstanceState);
 		
-		sharedPref = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-		String saved_token = readToken();
 		
-		if (saved_token != "0") {
+		
+		//sharedPref = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+		String saved_token = readToken();
+	
+		if (!saved_token.equals("0")) {
 			Intent i = new Intent(MainActivity.this, Student.class);
 			startActivity(i);
 		} else {
 			setContentView(R.layout.activity_main);
+			ActionBar actionBar = getActionBar();
+			actionBar.hide();
+			
 			et_username = (EditText) findViewById(R.id.editText_username);
 			et_password = (EditText) findViewById(R.id.editText_password);
 			et_server = (EditText) findViewById(R.id.editText_server);
 			
+			et_password.setText("");
 			Button btn_login = (Button) findViewById(R.id.button_login);
 			btn_login.setOnClickListener(MainActivity.this); /* Modified the way button click is implemented to give simpler view to code */
 			
@@ -83,17 +94,17 @@ public class MainActivity extends Activity implements OnClickListener {
 		}
 	}
 	
-	private boolean checkConnection() {
-
-		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo netInfo = cm.getActiveNetworkInfo();
-		/*if (netInfo != null && netInfo.isConnectedOrConnecting()) {*/
-		if (netInfo != null) {
-			return true;	//connected to the network
-		}
-		Toast.makeText(MainActivity.this, "No Network Connection", Toast.LENGTH_LONG).show();
-		return false; 	//no network connection
-	}
+//	protected boolean checkConnection() {
+//
+//		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+//		NetworkInfo netInfo = cm.getActiveNetworkInfo();
+//		/*if (netInfo != null && netInfo.isConnectedOrConnecting()) {*/
+//		if (netInfo != null) {
+//			return true;	//connected to the network
+//		}
+//		Toast.makeText(MainActivity.this, "No Network Connection", Toast.LENGTH_LONG).show();
+//		return false; 	//no network connection
+//	}
 
 	/* Save user token and the server in local storage */
 	private void saveToken() {
@@ -184,5 +195,10 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	}
 
-	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		et_password.setText("");
+	}
 }

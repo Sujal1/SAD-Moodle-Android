@@ -22,15 +22,17 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class Course extends Activity {
+public class Course extends BaseActivity {
 
 	String student_id;
 	ListView list_course;
-	public static final String MyPREFERENCES = "MyPrefs";
+	
+//	public static final String MyPREFERENCES = "MyPrefs";
+//	SharedPreferences sharedPref;
 	
 	private MySimpleArrayAdapter adapter;
 	
-	SharedPreferences sharedPref;
+	
 	
 	List<String> course_ids = new ArrayList<String>();
 	List<String> course_names = new ArrayList<String>();
@@ -42,7 +44,7 @@ public class Course extends Activity {
 
 		setContentView(R.layout.course);
 		
-		sharedPref = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+//		sharedPref = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
 		
 		list_course = (ListView) findViewById(R.id.listView_course);
 		student_id = getIntent().getExtras().getString("student_id");
@@ -97,24 +99,24 @@ public void loadCourses() {
 		
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.activity_main_actions, menu);
-		return true;
-	}
+//	@Override
+//	public boolean onCreateOptionsMenu(Menu menu) {
+//		// Inflate the menu; this adds items to the action bar if it is present.
+//		getMenuInflater().inflate(R.menu.activity_main_actions, menu);
+//		return true;
+//	}
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Take appropriate action for each action item click
 		switch (item.getItemId()) {
-		case R.id.action_logout:
-			
-			Editor editor = sharedPref.edit();
-			editor.putString("parent_token", "0");
-			editor.commit();
-			Toast.makeText(Course.this, "Token deleted", Toast.LENGTH_SHORT).show();
-			return true;
+//		case R.id.action_logout:
+//			
+//			Editor editor = sharedPref.edit();
+//			editor.putString("parent_token", "0");
+//			editor.commit();
+//			Toast.makeText(Course.this, "Token deleted", Toast.LENGTH_SHORT).show();
+//			return true;
 		
 		case R.id.action_synchronise:
 			if (checkConnection()) {
@@ -145,14 +147,14 @@ public void loadCourses() {
 	}
 	
 	
-	private boolean checkConnection() {
-
-		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo netInfo = cm.getActiveNetworkInfo();
-		if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-			return true;
-		}
-		return false;
-	}
+//	private boolean checkConnection() {
+//
+//		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+//		NetworkInfo netInfo = cm.getActiveNetworkInfo();
+//		if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+//			return true;
+//		}
+//		return false;
+//	}
 	
 }
