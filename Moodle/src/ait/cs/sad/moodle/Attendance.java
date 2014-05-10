@@ -119,7 +119,7 @@ public class Attendance extends BaseActivity {
 
 					httppost.setEntity(new UrlEncodedFormEntity(postParameters));
 					HttpResponse x = httpclient.execute(httppost);
-//					Log.d("$$$$$$$$$$$", x.getEntity().toString());
+					Log.d("$$$$$$$$$$$", x.getEntity().toString());
 				} catch (Exception e) {
 					e.printStackTrace();
 					Toast.makeText(Attendance.this, e.toString(),
